@@ -1,0 +1,35 @@
+.table-list {
+    margin-bottom: 15px;
+   
+    .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .u-table-title {
+        text-align: left;
+        padding-left: 0px;
+    }
+    .u-table-footer {
+        text-align: center;
+        .u-pagination {
+            display: inline-block;
+        }
+    }
+    .u-table-filter-column-filter-icon{
+        position: absolute;
+        top: 10px;
+        right: 3px;
+        width: 30px;
+        height: 30px;
+        z-index: 2;
+        .uf-navmenu::before{
+            background: #f7f7f7;
+        }
+    }
+    .u-table-fixed-header .u-table-body-inner{
+        overflow: hidden;
+    }
+}
