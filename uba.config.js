@@ -1,11 +1,20 @@
 const path = require('path');
 const hotMiddlewareScript = 'webpack-hot-middleware/client?reload=true';
 const webpack = require('webpack');
+const glob = require("glob");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const contentBase = './build/Release';
+
+
+let entries = {};
+let chunks = [];
+let prodEntries = {};
+let prodChunks = [];
+let htmlEntrys = [];
 
 const svrConfig = {
   historyApiFallback: false
@@ -17,39 +26,39 @@ const proxyConfig = [
     enable: true,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://10.10.24.43:8080/"    
+      "Referer": "http://10.10.24.43:8080/"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/wbalone', '/iuap_pap_quickstart', '/iuap-example','/eiap-plus/','/newref/'
     ],
-    url: 'http://10.10.24.43:8080'  
+    url: 'http://10.10.24.43:8080'
   },
   // 应用平台
   {
     enable: false,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://159.138.20.189:8080"    
+      "Referer": "http://159.138.20.189:8080"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/wbalone'
     ],
-    url: 'http://159.138.20.189:8080'  
+    url: 'http://159.138.20.189:8080'
   },
   // 后台开发服务
   {
     enable: false,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://159.138.20.189:8180"    
+      "Referer": "http://159.138.20.189:8180"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/iuap_pap_quickstart'
     ],
-    url: 'http://159.138.20.189:8180'  
+    url: 'http://159.138.20.189:8180'
   }
 ];
 
@@ -101,30 +110,21 @@ const rules = [{
   use: [{
     loader: 'babel-loader'
   }]
-}, {
-  test: /\.css$/,
-  use: ExtractTextPlugin.extract({
-    use: [{
-      loader: 'css-loader',
-      options: {
-        modules: false,
-        minimize: MINIMIZE_FLAG
-      }
-    }, 'postcss-loader'],
-    fallback: 'style-loader'
-  })
-}, {
+},{
   test: /\.less$/,
+  exclude: /(node_modules)/,
   use: ExtractTextPlugin.extract({
-    use: [{
-      loader: 'css-loader',
-      options: {
-        modules: false,
-        minimize: MINIMIZE_FLAG
-      }
-    }, 'postcss-loader', 'less-loader'],
+    use: ['css-loader', 'postcss-loader', 'less-loader'],
     fallback: 'style-loader'
   })
+},{
+    test: /\.css$/,
+    use: ExtractTextPlugin.extract({
+        use: [{
+            loader: 'css-loader',
+        }, 'postcss-loader'],
+        fallback: 'style-loader'
+    })
 }, {
   test: /\.(png|jpg|jpeg|gif)(\?.+)?$/,
   //exclude: /favicon\.png$/,
@@ -142,20 +142,26 @@ const rules = [{
     options: {
       name: '[name].[hash:8].[ext]',
       outputPath: 'fonts',
-      publicPath: '../fonts/'
+      publicPath: './fonts/'
     }
   }]
 }]
+
+
+//entries.vendors = getVendors();
+glob.sync("./src/modules/templates/*/entry/app.jsx").forEach(path => {
+    const chunk = path.split("./src/modules/templates/")[1].split(".jsx")[0];
+    entries[chunk] = ['babel-polyfill',path, hotMiddlewareScript];
+    chunks.push(chunk);
+});
+
 //开发环境的webpack配置
 const devConfig = {
   devtool: 'cheap-module-eval-source-map',
-  entry: {
-    vendors: getVendors(),
-    app: ['babel-polyfill', './src/app.jsx', hotMiddlewareScript]
-  },
+  entry: entries,
   output: {
-    path: path.resolve(__dirname, './dist'),
-    filename: 'js/[name].[hash:8].js',
+    path: path.resolve(__dirname, contentBase),
+    filename:  "[name].js",
     chunkFilename: 'js/[name].[hash:8].bundle.js',
     publicPath: '/'
   },
@@ -165,38 +171,56 @@ const devConfig = {
   },
   plugins: [
     new CommonsChunkPlugin({
-      name: "vendors"
+      name: "vendors",
+      filename:"vendors/[name].js"
     }),
     new ExtractTextPlugin({
-      filename: 'css/app.css'
+      filename: '[name].css',
+      allChunks: true
     }),
     globalEnvConfig,
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './src/index.html',
-      inject: 'body',
-      hash: false,
-      favicon: './src/static/images/favicon.png'
-    })
-
   ],
   resolve: resolve
 }
 
+glob.sync("./src/modules/templates/*/entry/index.html").forEach(path => {
+    const chunk = path.split("./src/modules/templates/")[1].split("/index.html")[0];
+
+    const filename = chunk + "/index.html"
+    const key = chunk + "/index";
+
+    const htmlConf = {
+        filename: filename,
+        template: path,
+        inject: false,
+        hash: true,
+        key: key,
+        chunks:['vendors',chunk+'/app'],
+        favicon: './src/static/images/favicon.png'
+    };
+    htmlEntrys.push(filename);
+    devConfig.plugins.push(new HtmlWebpackPlugin(htmlConf));
+});
+
+
+
+glob.sync("./src/modules/templates/*/entry/app.jsx").forEach(path => {
+    const chunk = path.split("./src/modules/templates/")[1].split(".jsx")[0];
+
+    prodEntries[chunk] = [path];
+    prodChunks.push(chunk);
+});
 
 //生产环境的webpack配置
 const prodConfig = {
   devtool: 'source-map',
-  entry: {
-    vendors: getVendors(),
-    app: ['babel-polyfill', './src/app.jsx']
-  },
+  entry: prodEntries,
   output: {
-    path: path.resolve(__dirname, './dist'),
+    publicPath: '',
+    path: path.resolve(__dirname, contentBase),
     chunkFilename: 'js/[name].[hash:8].bundle.js',
-    filename: 'js/[name].[hash:8].js'
   },
   externals: externals,
   module: {
@@ -204,10 +228,12 @@ const prodConfig = {
   },
   plugins: [
     new CommonsChunkPlugin({
-      name: "vendors"
+        name: "vendors",
+        filename:"vendors/[name].js"
     }),
     new ExtractTextPlugin({
-      filename: 'css/app.css'
+        filename: 'css/[name].css',
+        allChunks: true
     }),
     globalEnvConfig,
     new webpack.optimize.UglifyJsPlugin({
@@ -218,26 +244,8 @@ const prodConfig = {
         drop_console: true
       }
     }),
-    new CleanWebpackPlugin(['dist']),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './src/index.html',
-      inject: 'body',
-      hash: true,
-      favicon: './src/static/images/favicon.png',
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true
-      }
-    }),
+    new CleanWebpackPlugin(['build']),
+
     new BundleAnalyzerPlugin({
       analyzerMode: 'static'
     })
@@ -245,8 +253,40 @@ const prodConfig = {
   resolve: resolve
 }
 
+glob.sync("./src/modules/templates/*/entry/index.html").forEach(path => {
+    const chunk = path.split("./src/modules/templates/")[1].split("/index.html")[0];
 
+    const filename = chunk + "/index.html";
+    const key = chunk + "/index";
+    const realPath = prodConfig.output.publicPath + key + '.js';
+    const realCssPath = prodConfig.output.publicPath + key + '.css';
 
+    const htmlConf = {
+        filename: filename,
+        template: path,
+        inject: false,
+        hash: true,
+        key: key,
+        chunks:['vendors',chunk+'/app'],
+        favicon: './src/static/images/favicon.png',
+        realPath: realPath,
+        realCssPath: realCssPath,
+        minify: {
+            removeComments: true,
+            collapseWhitespace: true,
+            removeRedundantAttributes: true,
+            useShortDoctype: true,
+            removeEmptyAttributes: true,
+            removeStyleLinkTypeAttributes: true,
+            keepClosingSlash: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true
+        }
+    };
+
+    prodConfig.plugins.push(new HtmlWebpackPlugin(htmlConf));
+});
 
 
 //最终向uba导出配置文件

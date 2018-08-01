@@ -47,6 +47,7 @@
   "dependencies": {
     "ac-upload": "0.0.20",
     "axios": "^0.18.0",
+    "glob": "^7.1.2",
     "bee-autocomplete": "^1.0.4",
     "bee-city-select": "^1.0.6",
     "bee-datepicker": "^1.0.31",
