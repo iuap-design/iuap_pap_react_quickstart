@@ -95,7 +95,7 @@ const resolve = {
   ],
   alias: {
     components: path.resolve(__dirname, 'src/components/'),
-    modules: path.resolve(__dirname, 'src/modules/'),
+    modules: path.resolve(__dirname, 'src/pages/'),
     routes: path.resolve(__dirname, 'src/routes/'),
     layout: path.resolve(__dirname, 'src/layout/'),
     utils: path.resolve(__dirname, 'src/utils/'),
@@ -150,8 +150,8 @@ const rules = [{
 
 
 //entries.vendors = getVendors();
-glob.sync("./src/modules/templates/*/entry/app.jsx").forEach(path => {
-    const chunk = path.split("./src/modules/templates/")[1].split(".jsx")[0];
+glob.sync("./src/pages/*/app.jsx").forEach(path => {
+    const chunk = path.split("./src/pages/")[1].split(".jsx")[0];
     entries[chunk] = ['babel-polyfill',path, hotMiddlewareScript];
     chunks.push(chunk);
 });
@@ -186,8 +186,8 @@ const devConfig = {
   resolve: resolve
 }
 
-glob.sync("./src/modules/templates/*/entry/index.html").forEach(path => {
-    const chunk = path.split("./src/modules/templates/")[1].split("/index.html")[0];
+glob.sync("./src/pages/*/index.html").forEach(path => {
+    const chunk = path.split("./src/pages/")[1].split("/index.html")[0];
 
     const filename = chunk + "/index.html"
     const key = chunk + "/index";
@@ -207,8 +207,8 @@ glob.sync("./src/modules/templates/*/entry/index.html").forEach(path => {
 
 
 
-glob.sync("./src/modules/templates/*/entry/app.jsx").forEach(path => {
-    const chunk = path.split("./src/modules/templates/")[1].split(".jsx")[0];
+glob.sync("./src/pages/*/app.jsx").forEach(path => {
+    const chunk = path.split("./src/pages/")[1].split(".jsx")[0];
 
     prodEntries[chunk] = [path];
     prodChunks.push(chunk);
@@ -254,8 +254,8 @@ const prodConfig = {
   resolve: resolve
 }
 
-glob.sync("./src/modules/templates/*/entry/index.html").forEach(path => {
-    const chunk = path.split("./src/modules/templates/")[1].split("/index.html")[0];
+glob.sync("./src/pages/*/index.html").forEach(path => {
+    const chunk = path.split("./src/pages/")[1].split("/index.html")[0];
 
     const filename = chunk + "/index.html";
     const key = chunk + "/index";

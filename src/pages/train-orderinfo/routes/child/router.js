@@ -3,13 +3,13 @@ import { Route } from 'mirrorx'
 
 
 // 导入节点
-/*
+
 import {
     ConnectedOrderInfoPaginationTable,
     ConnectedOrderInfoEdit,
     ConnectedOrderInfoBpmChart
-} from './train-orderinfo/container'
-*/
+} from '../../container'
+
 
 
 /**
@@ -23,13 +23,13 @@ import {
 export default ({ match }) => (
     <div className="templates-route">
         {/*配置根路由记载节点*/}
-        {/*<Route exact path={`/`} component={ConnectedOrderInfoPaginationTable} />*/}
 
+        <Route exact path={'/'} component={ConnectedOrderInfoPaginationTable} />
 
         {/*配置节点路由*/}
-        {/*<Route exact path={`${match.url}/TrainSaleOrder-table`} component={ConnectedTrainSaleOrderPaginationTable} />*/}
-        {/*<Route exact path={`${match.url}/TrainSaleOrder-edit`} component={ConnectedTrainSaleOrderEdit} />*/}
-        {/*<Route exact path={`${match.url}/TrainSaleOrder-chart`} component={ConnectedTrainSaleOrderBpmChart} />*/}
+        <Route path={`${match.url}OrderInfo-table`} component={ConnectedOrderInfoPaginationTable} />
+        <Route path={`${match.url}OrderInfo-edit`} component={ConnectedOrderInfoEdit} />
+        <Route path={`${match.url}OrderInfo-chart`} component={ConnectedOrderInfoBpmChart} />
 
     </div>
 )

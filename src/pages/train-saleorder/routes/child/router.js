@@ -7,7 +7,7 @@ import {
     ConnectedTrainSaleOrderPaginationTable,
     ConnectedTrainSaleOrderEdit,
     ConnectedTrainSaleOrderBpmChart
-} from '../../../container'
+} from '../../container'
 
 
 

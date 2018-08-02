@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { Router,Switch,withRouter } from "mirrorx";
 import { Transition,TransitionGroup,CSSTransition} from 'react-transition-group'
-
 import LayoutHeader from './LayoutHeader';
 import Sidebar from './Sidebar/index.js';
-//import Routes from "../routes";
 import "./index.less";
 import "./animation.css";
 
