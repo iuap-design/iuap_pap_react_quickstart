@@ -99,7 +99,8 @@ const resolve = {
     routes: path.resolve(__dirname, 'src/routes/'),
     layout: path.resolve(__dirname, 'src/layout/'),
     utils: path.resolve(__dirname, 'src/utils/'),
-    static: path.resolve(__dirname, 'src/static/')
+    static: path.resolve(__dirname, 'src/static/'),
+    src:path.resolve(__dirname, 'src/')
   }
 }
 //开发和生产需要的loader

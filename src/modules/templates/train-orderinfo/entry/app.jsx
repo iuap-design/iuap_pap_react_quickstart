@@ -7,11 +7,10 @@ import 'core-js/es6/map';
 import 'core-js/es6/set';
 import logger from "redux-logger";
 import mirror, { render,Router } from "mirrorx";
-import MainLayout from "../../../../layout";
+import MainLayout from "layout";
 import Routes from './routes';
-
-import '../../../../static/trd/tineper-bee/assets/tinper-bee.css'
-import "../../../../app.less";
+import 'static/trd/tineper-bee/assets/tinper-bee.css'
+import "src/app.less";
 
 const MiddlewareConfig = [];
 
