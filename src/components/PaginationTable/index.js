@@ -20,13 +20,13 @@ const propTypes = {
     // 表格行数据
     data: PropTypes.array.isRequired,
     // 显示是否展示 Loading 图标
-    showLoading: PropTypes.bool.isRequired, 
+    showLoading: PropTypes.bool.isRequired,
     // 表格当前展示多少行数据，默认为10
-    pageSize: PropTypes.number, 
+    pageSize: PropTypes.number,
     // 当前选中，对应activePage
-    pageIndex: PropTypes.number.isRequired, 
+    pageIndex: PropTypes.number.isRequired,
     // 总页数数量，默认为 5
-    totalPages: PropTypes.number, 
+    totalPages: PropTypes.number,
     // 定义表格列
     columns: PropTypes.array.isRequired,
     // 返回已选中的所有数据
@@ -45,10 +45,10 @@ const propTypes = {
 
 const defaultProps = {
     data: [],
-    showLoading: false, 
-    pageSize: 10, 
-    pageIndex: 1, 
-    totalPages: 1, 
+    showLoading: false,
+    pageSize: 10,
+    pageIndex: 1,
+    totalPages: 1,
     columns: [],
     onTableSelectedData: (value) => { },
     onPageSizeSelect: (value) => { },
@@ -56,13 +56,13 @@ const defaultProps = {
 };
 
 
-const dataList = [ 
-    { 
-        index: 1, 
-        orderCode:"2343", 
+const dataList = [
+    {
+        index: 1,
+        orderCode:"2343",
         supplierName: "xxx",
         type_name: "123",
-        purchasing:'内行', 
+        purchasing:'内行',
         purchasingGroup:"323",
         voucherDate:"kkkk",
         approvalState_name:"vvvv",
@@ -70,13 +70,13 @@ const dataList = [
         closeState_name:"vnnnnn",
         d:"操作",
         key: "1"
-    }, 
-    { 
-      index: 2, 
-      orderCode:"222", 
+    },
+    {
+      index: 2,
+      orderCode:"222",
       supplierName: "22xxx",
       type_name: "1223",
-      purchasing:'内行2', 
+      purchasing:'内行2',
       purchasingGroup:"3223",
       voucherDate:"222kk",
       approvalState_name:"22vvvv",
@@ -84,7 +84,7 @@ const dataList = [
       closeState_name:"2vnnnnn",
       d:"2操作",
       key: "2"
-  }, 
+  },
   ]
 /**
  * PaginationTable 组件功能说明：
@@ -102,15 +102,15 @@ class PaginationTable extends Component {
         })
     }
     render(){
-        const { 
+        const {
             data, showLoading, pageSize,
             pageIndex, totalPages, columns,checkMinSize,
             onTableSelectedData, onPageSizeSelect, onPageIndexSelect,
-            scroll,title,footer
+            scroll,title,footer,total,
         } = this.props;
         const step = this.state.step;
         let dataNumSelect = [step, step * 2, step * 3, step * 4];
-        
+
         return (
             <div className="table-list">
                 <MultiSelectTable
@@ -141,6 +141,7 @@ class PaginationTable extends Component {
                         dataNum={4}
                         maxButtons={5}
                         dataNumSelect={dataNumSelect}
+                        total={total}
                     />
                 </div>
             </div>
