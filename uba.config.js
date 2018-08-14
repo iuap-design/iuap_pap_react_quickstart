@@ -7,7 +7,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const contentBase = './build/Release';
+const context= '/fe';
+const contentBase = './build'+context;
 
 
 let entries = {};
@@ -68,7 +69,7 @@ const globalEnvConfig = new webpack.DefinePlugin({
   GSP_CONTRACT: JSON.stringify("/gsp-contract"),
   GSP_ORDERS: JSON.stringify("/gsp-orders"),
   GSP_SUPPLIER: JSON.stringify("/gsp-supplier")
-})
+});
 
 const MINIMIZE_FLAG = (process.env.NODE_ENV == "production") ? true : false;
 
@@ -219,7 +220,7 @@ const prodConfig = {
   devtool: 'source-map',
   entry: prodEntries,
   output: {
-    publicPath: '',
+    publicPath: context,
     path: path.resolve(__dirname, contentBase),
     chunkFilename: 'js/[name].[hash:8].bundle.js',
   },
