@@ -18,10 +18,10 @@ const defaultProps = {
     title: ''
 };
 
-const headerStyle = classnames({ 
+const headerStyle = classnames({
     'title': true,
-    'title-develop': (__MODE__ == 'development') ? true: false 
-}); 
+    'title-develop': true
+});
 
 class Header extends Component {
     constructor(props) {

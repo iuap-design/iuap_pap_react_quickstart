@@ -19,9 +19,9 @@ class MainLayout extends Component {
         return (
 
             <div className="honey-container">
-                { (__MODE__ == "development") ?  <Sidebar /> : "" }
+                {/*{ (__MODE__ == "development") ?  <Sidebar /> : "" }*/}
                 <div className="page-layout">
-                    { (__MODE__ == "development") ? <LayoutHeader /> : "" }
+                    {/*{ (__MODE__ == "development") ? <LayoutHeader /> : "" }*/}
 
                     <TransitionGroup component="main" className="page-main">
                         <CSSTransition key={currentKey} timeout={timeout} classNames="fade" appear>
