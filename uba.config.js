@@ -7,8 +7,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const context= '/fe';
-const contentBase = './build'+context;
+const pathUrl = ''; //http://127.0.0.1:8080 设置host，可选
+const context = '/fe';//工程节点名称
+const contentBase = './build'+context;//打包目录
 
 
 let entries = {};
@@ -134,7 +135,8 @@ const rules = [{
     loader: 'url-loader',
     options: {
       limit: 8196,
-      name: 'images/[name].[hash:8].[ext]'
+      name: 'images/[name].[hash:8].[ext]',
+      publicPath:pathUrl+context
     }
   }]
 }, {
@@ -144,14 +146,15 @@ const rules = [{
     options: {
       name: '[name].[hash:8].[ext]',
       outputPath: 'fonts',
-      publicPath: './fonts/'
+      publicPath: pathUrl+context+'/fonts/'
     }
   }]
 }]
 
 
 //entries.vendors = getVendors();
-glob.sync("./src/pages/*/app.jsx").forEach(path => {
+
+glob.sync("./src/pages/**/app.jsx").forEach(path => {
     const chunk = path.split("./src/pages/")[1].split(".jsx")[0];
     entries[chunk] = ['babel-polyfill',path, hotMiddlewareScript];
     chunks.push(chunk);
@@ -165,7 +168,7 @@ const devConfig = {
     path: path.resolve(__dirname, contentBase),
     filename:  "[name].js",
     chunkFilename: 'js/[name].[hash:8].bundle.js',
-    publicPath: '/'
+    publicPath: context
   },
   externals: externals,
   module: {
@@ -187,7 +190,7 @@ const devConfig = {
   resolve: resolve
 }
 
-glob.sync("./src/pages/*/index.html").forEach(path => {
+glob.sync("./src/pages/**/index.html").forEach(path => {
     const chunk = path.split("./src/pages/")[1].split("/index.html")[0];
 
     const filename = chunk + "/index.html"
@@ -208,7 +211,7 @@ glob.sync("./src/pages/*/index.html").forEach(path => {
 
 
 
-glob.sync("./src/pages/*/app.jsx").forEach(path => {
+glob.sync("./src/pages/**/app.jsx").forEach(path => {
     const chunk = path.split("./src/pages/")[1].split(".jsx")[0];
 
     prodEntries[chunk] = [path];
@@ -220,7 +223,7 @@ const prodConfig = {
   devtool: 'source-map',
   entry: prodEntries,
   output: {
-    publicPath: context,
+    publicPath: pathUrl+context,
     path: path.resolve(__dirname, contentBase),
     chunkFilename: 'js/[name].[hash:8].bundle.js',
   },
@@ -255,7 +258,7 @@ const prodConfig = {
   resolve: resolve
 }
 
-glob.sync("./src/pages/*/index.html").forEach(path => {
+glob.sync("./src/pages/**/index.html").forEach(path => {
     const chunk = path.split("./src/pages/")[1].split("/index.html")[0];
 
     const filename = chunk + "/index.html";
