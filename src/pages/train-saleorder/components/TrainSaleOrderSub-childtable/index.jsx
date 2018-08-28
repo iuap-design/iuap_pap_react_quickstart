@@ -381,7 +381,7 @@ class ChildTable extends Component {
         <div>
             {
                 editable?(
-                    <RefWithInput disabled={false} option={Object.assign(JSON.parse(options), {
+                    <RefWithInput disabled={false} option={options({
                         title: '我的参照组织',
                         refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
                         className: '',

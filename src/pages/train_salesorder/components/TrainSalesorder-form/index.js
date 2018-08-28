@@ -124,7 +124,7 @@ class TrainSalesorderForm extends Component {
                             <Col md={4} xs={6}>
                                 <FormItem>
                                     <Label>组织</Label>
-                                    <RefWithInput option={Object.assign(JSON.parse(options),{
+                                    <RefWithInput option={options({
                                                   title: '',
                                         refType: 6,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',

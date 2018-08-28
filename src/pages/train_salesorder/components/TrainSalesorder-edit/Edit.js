@@ -116,7 +116,7 @@ class Edit extends Component {
                                             item[refArray[i]] = target[refArray[i]];
                                         }
                                     }
-                                    
+
                                     /* let tempmaterialid = item["materialid"+uuid];
                                     let tempmetarialIdName = item["metarialIdName"]
                                     if(tempmaterialid){
@@ -139,9 +139,9 @@ class Edit extends Component {
                                         let target = cacheArrayTrainSalesorderSub.filter(item=>item.uuid==uuid)[0];
                                         item.storeman = target.storeman;
                                     } */
-                                    
-                                    
-                                    
+
+
+
 
                                     /* let tempconfirmuser = item["confirmuser"+uuid];
                                     let tempCONFIRMPERSON_NAME = item["CONFIRMPERSON_NAME"]
@@ -153,7 +153,7 @@ class Edit extends Component {
                                         let target = cacheArrayTrainSalesorderSub.filter(item=>item.uuid==uuid)[0];
                                         item.confirmuser = target.confirmuser;
                                     } */
-                            
+
                         })
                     }
                     console.log('save childList',childListTrainSalesorderSub)
@@ -181,7 +181,7 @@ class Edit extends Component {
     }
 
     handleRef = (item,) =>{
-        
+
     }
 
     onBack = async() => {
@@ -356,7 +356,7 @@ class Edit extends Component {
                                 <Label>
                                     组织：
                                 </Label>
-                                    <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                    <RefWithInput disabled={btnFlag == 2} option={options({
                                                   title: '',
                                         refType: 6,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
@@ -365,6 +365,11 @@ class Edit extends Component {
                                             tenantId: '',
                                             sysId: '',
                                             transmitParam: '6',
+                                        },
+                                        refModelUrl:{
+                                            TreeUrl:'/newref/rest/iref_ctr/blobRefTree', //树请求
+                                            TableBodyUrl:'/newref/rest/iref_ctr/blobRefTreeGrid',//表体请求//ref/rest/iref_ctr/blobRefTreeGrid
+                                            TableBarUrl:'/newref/rest/iref_ctr/refInfo',//表头请求ref/rest/iref_ctr/refInfo
                                         },
                                         keyList:refKeyArrayorganization,//选中的key
                                         onSave: function (sels) {
@@ -432,7 +437,7 @@ class Edit extends Component {
                                 <Label>
                                     销售业务员：
                                 </Label>
-                                    <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                    <RefWithInput disabled={btnFlag == 2} option={options({
                                                   title: '',
                                         refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',

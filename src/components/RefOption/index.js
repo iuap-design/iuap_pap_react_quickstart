@@ -1,4 +1,7 @@
-
+const deepClone=(obj)=>{
+    var proto=Object.getPrototypeOf(obj);
+    return Object.assign({},Object.create(proto),obj);
+}
 
 let option = {
     title: '',
@@ -35,4 +38,7 @@ let option = {
 }
 
 
-export default JSON.stringify(option)
+
+export default function (p) {
+    return Object.assign(deepClone(option),p)
+}

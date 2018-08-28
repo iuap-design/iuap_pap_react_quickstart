@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import { actions } from "mirrorx";
 import queryString from 'query-string';
 import { Switch, InputNumber,
-            Loading, Table, Button, 
-            Col, Row, Icon, 
-            InputGroup, FormControl, 
-            Checkbox, Modal, 
-            Panel, PanelGroup, 
-            Label, Message, Radio 
+            Loading, Table, Button,
+            Col, Row, Icon,
+            InputGroup, FormControl,
+            Checkbox, Modal,
+            Panel, PanelGroup,
+            Label, Message, Radio
         } from "tinper-bee";
 import { BpmTaskApprovalWrap } from 'yyuap-bpm';
 import AcUpload from 'ac-upload';
@@ -256,7 +256,7 @@ class Edit extends Component {
                             <Label>
                                 采购单位：
                             </Label>
-                                <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                <RefWithInput disabled={btnFlag == 2} option={options({
                                               title: '',
                                     refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                     className: '',
@@ -289,7 +289,7 @@ class Edit extends Component {
                             <Label>
                                 供应商编号：
                             </Label>
-                                <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                <RefWithInput disabled={btnFlag == 2} option={options({
                                               title: '',
                                     refType: 6,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                     className: '',

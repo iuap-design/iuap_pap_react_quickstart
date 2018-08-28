@@ -291,7 +291,7 @@ class Edit extends Component {
                             <Label>
                             组织：
                             </Label>
-                                <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                <RefWithInput disabled={btnFlag == 2} option={options({
                                               title: '',
                                     refType: 6,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                     className: '',
@@ -449,7 +449,7 @@ class Edit extends Component {
                             <Label>
                             经办业务员：
                             </Label>
-                                <RefWithInput disabled={btnFlag == 2} option={Object.assign(JSON.parse(options),{
+                                <RefWithInput disabled={btnFlag == 2} option={options({
                                               title: '',
                                     refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                     className: '',

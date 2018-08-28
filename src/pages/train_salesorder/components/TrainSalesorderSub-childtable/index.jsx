@@ -5,17 +5,17 @@ import PaginationTable from 'components/PaginationTable';
 import options from "components/RefOption";
 import RefWithInput from 'yyuap-ref/dist2/refWithInput';
 import Form from 'bee-form';
-import { 
-    InputNumber, InputGroup,FormControl, 
-    Loading, 
-    Table, 
-    Button, 
-    Row,Col, 
-    Icon, 
-    Checkbox, Modal, 
-    Panel, PanelGroup, 
-    Label, 
-    Message, 
+import {
+    InputNumber, InputGroup,FormControl,
+    Loading,
+    Table,
+    Button,
+    Row,Col,
+    Icon,
+    Checkbox, Modal,
+    Panel, PanelGroup,
+    Label,
+    Message,
     Radio,
     Pagination
 } from "tinper-bee";
@@ -38,15 +38,15 @@ let id = 0;
 class ChildTable extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             selectData:[],
             editFlag:true,
-            
+
         };
         let {btnFlag} = this.props;
         this.editFlag = btnFlag ? btnFlag<2 : true;
         // console.log("editFlag",this.editFlag);
-        
+
         this.column = [
                 {
                     title: "金额",
@@ -120,18 +120,18 @@ class ChildTable extends Component {
                     width: 100,
                     render:(text, record, index)=> {
                         return  (
-                            
+
                             <div className='operation-btn'>
                                 {
                                     this.editFlag?<i size='sm' className='uf uf-del del-btn' onClick={() => { this.onChildDel(record, index) }}></i> :text
                                 }
                             </div>
-                        ) 
-                        
+                        )
+
                     }
                 }
             ]
-            
+
     }
 
     // 普通编辑框渲染
@@ -266,7 +266,7 @@ class ChildTable extends Component {
                         onChange={value => onChange(value)}
                         value={moment(value)}
                     />
-               ) 
+               )
                :value
             }
         </div>
@@ -284,7 +284,7 @@ class ChildTable extends Component {
             });
         }
     }
-    
+
     // 渲染参照
     renderRef = (text, record,index, column,editFlag) => {
         let self = this;
@@ -299,7 +299,7 @@ class ChildTable extends Component {
                 childRefKey = item[column]? item[column].split(','):[]
             }
         })
-        
+
         return (
             <this.EditableCellRef
                 editable={editFlag}
@@ -316,11 +316,11 @@ class ChildTable extends Component {
         <div>
             {
                 editable?(
-                    <RefWithInput disabled={false} option={Object.assign(JSON.parse(options), {
+                    <RefWithInput disabled={false} option={options({
                         title: '我的参照组织',
-                        
+
                         refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
-                        
+
                         className: '',
                         param: {//url请求参数
                             refCode: 'common_ref',
@@ -347,13 +347,13 @@ class ChildTable extends Component {
                         verKey: `${record['uuid']}${fieldKey}`,//校验字段
                         verVal: value
                     })} form={this.props.form} />
-               ) 
+               )
                :value
             }
         </div>
-        
+
     )
-    
+
     // 渲染下拉框
     renderSelect = (text, record,index, column,editFlag) => {
         return (
@@ -407,7 +407,7 @@ class ChildTable extends Component {
                 unit:0,
                 deliverystatus:0,
                 storeman:'',
-                confirmtime:moment().toISOString(),            
+                confirmtime:moment().toISOString(),
             };
             // UUID用于表示新增数据，在保存数据时需要删掉uuid字段
             // let uuid = this.guid();
@@ -433,7 +433,7 @@ class ChildTable extends Component {
             id = record['id'],
             uuid = record['uuid'],
             delArray = this.deepClone('delArrayTrainSalesorderSub');
-        
+
         let childLen = childList.length,
             cacheLen = cacheArray.length;
 
@@ -445,7 +445,7 @@ class ChildTable extends Component {
                 if(temp && temp==uuid){
                     tempIndex = i;
                 }
-                
+
             }
             let delItem = childList[tempIndex];
             let delItemId = delItem.id;
@@ -455,11 +455,11 @@ class ChildTable extends Component {
             childList.splice(tempIndex,1);
             console.log("delArray",delArray);
         }
-        
+
 
         console.log("this.props.childListTrainSalesorderSub",this.props.childListTrainSalesorderSub);
         console.log("删除后",childList,cacheArray)
-        
+
         await actions.TrainSalesorder.updateState({
             childListTrainSalesorderSub:childList,
             cacheArrayTrainSalesorderSub:cacheArray,
