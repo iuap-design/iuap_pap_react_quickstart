@@ -33,7 +33,7 @@ class Header extends Component {
     render() {
         const { backFn, title, back, children } = this.props;
         return (
-            <Row className={headerStyle}>
+            <Row className={"title title-develop"}>
                 <Col xs={12}>
                     {
                         back ? (
