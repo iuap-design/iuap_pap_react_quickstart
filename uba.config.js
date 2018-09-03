@@ -10,6 +10,9 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const pathUrl = ''; //http://127.0.0.1:8080 设置host，可选
 const context = '/fe';//工程节点名称
 const contentBase = './build'+context;//打包目录
+const staticConfig = {
+    folder: "dll"
+};
 
 
 let entries = {};
@@ -28,26 +31,26 @@ const proxyConfig = [
     enable: true,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://10.10.24.43:8080/"
+      "Referer": "http://172.20.52.107:8080"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/wbalone', '/iuap_pap_quickstart', '/iuap-example','/eiap-plus/','/newref/'
     ],
-    url: 'http://10.10.24.43:8080'
+    url: 'http://172.20.52.107:8080'
   },
   // 应用平台
   {
     enable: false,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://159.138.20.189:8080"
+      "Referer": "http://172.20.52.107:8080"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/wbalone'
     ],
-    url: 'http://159.138.20.189:8080'
+    url: 'http://172.20.52.107:8080'
   },
   // 后台开发服务
   {
@@ -152,11 +155,12 @@ const rules = [{
 }]
 
 
-//entries.vendors = getVendors();
+entries.vendors = prodEntries.vendors = ['babel-polyfill'].concat(getVendors());
+
 
 glob.sync("./src/pages/**/app.jsx").forEach(path => {
     const chunk = path.split("./src/pages/")[1].split(".jsx")[0];
-    entries[chunk] = ['babel-polyfill',path, hotMiddlewareScript];
+    entries[chunk] = [path, hotMiddlewareScript];
     chunks.push(chunk);
 });
 
@@ -175,14 +179,14 @@ const devConfig = {
     rules: rules
   },
   plugins: [
-    new CommonsChunkPlugin({
-      name: "vendors",
-      filename:"vendors/[name].js"
-    }),
-    new ExtractTextPlugin({
-      filename: '[name].css',
-      allChunks: true
-    }),
+      new CommonsChunkPlugin({
+          name: "vendors",
+          filename:"vendors/[name].js"
+      }),
+        new ExtractTextPlugin({
+          filename: 'vendors/[name].css',
+          allChunks: true
+        }),
     globalEnvConfig,
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -221,7 +225,7 @@ glob.sync("./src/pages/**/app.jsx").forEach(path => {
 //生产环境的webpack配置
 const prodConfig = {
   devtool: 'source-map',
-  entry: prodEntries,
+    entry: prodEntries,
   output: {
     publicPath: pathUrl+context,
     path: path.resolve(__dirname, contentBase),
@@ -232,12 +236,12 @@ const prodConfig = {
     rules: rules
   },
   plugins: [
-    new CommonsChunkPlugin({
-        name: "vendors",
-        filename:"vendors/[name].js"
-    }),
+      new CommonsChunkPlugin({
+          name: "vendors",
+          filename:"vendors/[name].js"
+      }),
     new ExtractTextPlugin({
-        filename: 'css/[name].css',
+        filename: 'vendors/[name].css',
         allChunks: true
     }),
     globalEnvConfig,
@@ -299,5 +303,6 @@ module.exports = {
   devConfig,
   prodConfig,
   svrConfig,
-  proxyConfig
+  proxyConfig,
+  staticConfig
 };
