@@ -19,6 +19,7 @@ let option = {
         TableBarUrl:'/newref/rest/iref_ctr/refInfo',//表头请求ref/rest/iref_ctr/refInfo
     },
     filterRefUrl:'/iuap_pap_quickstart/common/filterRef',//get
+    buttonText:{ok:"确定",cancel:"取消"},
     // keyList:['123'],//选中的key
 
     // checkedArray: [],
