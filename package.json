@@ -49,7 +49,7 @@
     "axios": "^0.18.0",
     "bee-autocomplete": "^1.0.4",
     "bee-city-select": "^1.0.6",
-    "bee-datepicker": "^1.0.31",
+    "bee-datepicker": "^1.2.1",
     "bee-form": "^2.0.0",
     "bee-pagination": "^1.1.3",
     "bee-search-panel": "^0.1.4",
@@ -74,6 +74,6 @@
     "react-transition-group": "^2.4.0",
     "tinper-bee": "1.5.0",
     "yyuap-bpm": "0.0.17",
-    "yyuap-ref": "^1.0.85"
+    "yyuap-ref": "^1.1.16"
   }
 }

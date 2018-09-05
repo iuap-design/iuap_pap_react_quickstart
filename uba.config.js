@@ -184,8 +184,7 @@ const devConfig = {
           filename:"vendors/[name].js"
       }),
         new ExtractTextPlugin({
-          filename: 'vendors/[name].css',
-          allChunks: true
+          filename: '[name].css',
         }),
     globalEnvConfig,
     new webpack.NamedModulesPlugin(),
@@ -229,7 +228,7 @@ const prodConfig = {
   output: {
     publicPath: pathUrl+context,
     path: path.resolve(__dirname, contentBase),
-    chunkFilename: 'js/[name].[hash:8].bundle.js',
+    chunkFilename: 'js/[name].bundle.js',
   },
   externals: externals,
   module: {
@@ -240,10 +239,10 @@ const prodConfig = {
           name: "vendors",
           filename:"vendors/[name].js"
       }),
-    new ExtractTextPlugin({
-        filename: 'vendors/[name].css',
-        allChunks: true
-    }),
+        new ExtractTextPlugin({
+            filename: '[name].css',
+            allChunks: true
+        }),
     globalEnvConfig,
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
