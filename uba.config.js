@@ -57,13 +57,13 @@ const proxyConfig = [
     enable: false,
     headers: {
       // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://159.138.20.189:8180"
+      "Referer": "http://172.20.52.107:8080"
     },
     // context，如果不配置，默认就是代理全部。
     router: [
       '/iuap_pap_quickstart'
     ],
-    url: 'http://159.138.20.189:8180'
+    url: 'http://172.20.52.107:8080'
   }
 ];
 
