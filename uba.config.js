@@ -27,49 +27,36 @@ const svrConfig = {
 
 // 远程代理访问，可以配置多个代理服务：https://github.com/chimurai/http-proxy-middleware
 const proxyConfig = [
-  {
-    enable: true,
-    headers: {
-      // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://172.20.52.107:8080"
+    {
+        enable: true,
+        headers: {
+            // 这是之前网页的地址，从中可以看到当前请求页面的链接。
+            "Referer": "http://172.20.52.107:8080"
+        },
+        // context，如果不配置，默认就是代理全部。
+        router: [
+            '/wbalone', '/iuap-example','/eiap-plus/','/newref/', '/print_service/', '/iuap-print/'
+        ],
+        url: 'http://172.20.52.107:8080'
     },
-    // context，如果不配置，默认就是代理全部。
-    router: [
-      '/wbalone', '/iuap_pap_quickstart', '/iuap-example','/eiap-plus/','/newref/'
-    ],
-    url: 'http://172.20.52.107:8080'
-  },
-  // 应用平台
-  {
-    enable: false,
-    headers: {
-      // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://172.20.52.107:8080"
-    },
-    // context，如果不配置，默认就是代理全部。
-    router: [
-      '/wbalone'
-    ],
-    url: 'http://172.20.52.107:8080'
-  },
-  // 后台开发服务
-  {
-    enable: false,
-    headers: {
-      // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-      "Referer": "http://172.20.52.107:8080"
-    },
-    // context，如果不配置，默认就是代理全部。
-    router: [
-      '/iuap_pap_quickstart'
-    ],
-    url: 'http://172.20.52.107:8080'
-  }
+    // 后台开发服务
+    {
+        enable: true,
+        headers: {
+            // 这是之前网页的地址，从中可以看到当前请求页面的链接。
+            "Referer": "http://172.20.52.107:8080"
+        },
+        // context，如果不配置，默认就是代理全部。
+        router: [
+            '/Duban'
+        ],
+        url: 'http://172.20.52.107:8080'
+    }
 ];
 
 const globalEnvConfig = new webpack.DefinePlugin({
   __MODE__: JSON.stringify(process.env.NODE_ENV),
-  GROBAL_HTTP_CTX: JSON.stringify("/iuap_pap_quickstart"),
+  GROBAL_HTTP_CTX: JSON.stringify("/Duban"),
   GSP_CONTRACT: JSON.stringify("/gsp-contract"),
   GSP_ORDERS: JSON.stringify("/gsp-orders"),
   GSP_SUPPLIER: JSON.stringify("/gsp-supplier")
