@@ -519,7 +519,7 @@ export default class DubanPaginationTable extends Component {
 
         return (
             <div className='Duban-root'>
-1111111111
+
                 <Header title={<FormattedMessage
                     id="intl.title"
                 />} />
