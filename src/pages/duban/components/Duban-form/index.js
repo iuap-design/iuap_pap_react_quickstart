@@ -122,34 +122,41 @@ class DubanForm extends Component {
      */
     reset = () => {
         this.setState({
-    code:'',
-    endDate:'',
-    zrrName:'',
-    xbr:'',
-    zbr:'',
-    rwpf:'',
-    lyCode:'',
-    qtLd:'',
-    zrDw:'',
-    jdBl:'',
-    zrdwName:'',
-    state:'',
-    dbInfo:'',
-    xbrName:'',
-    xbDwName:'',
-    kpiLevel:'',
-    jfyq:'',
-    xbDw:'',
-    zbrName:'',
-    beginDate:'',
-    kpiFlag:'',
-    unitIdName:'',
-    lySm:'',
-    dbr:'',
-    name:'',
-    unitid:'',
-    zyCd:'',
-    zrr:'',
+            code:'',
+            endDate:'',
+            zrrName:'',
+            xbr:'',
+            zbr:'',
+            rwpf:'',
+            lyCode:'',
+            qtLd:'',
+            zrDw:'',
+            jdBl:'',
+            zrdwName:'',
+            state:'',
+            dbInfo:'',
+            xbrName:'',
+            xbDwName:'',
+            kpiLevel:'',
+            jfyq:'',
+            xbDw:'',
+            zbrName:'',
+            beginDate:'',
+            kpiFlag:'',
+            unitIdName:'',
+            lySm:'',
+            dbr:'',
+            name:'',
+            unitid:'',
+            zyCd:'',
+            zrr:'', 
+            refKeyArrayxbr:"",
+            refKeyArrayzbr:"",
+            refKeyArrayzrDw:"",
+            refKeyArrayxbDw:"",
+            refKeyArrayunitid:"",
+            refKeyArrayzrr:"",
+
         })
     }
     render(){
@@ -266,13 +273,13 @@ class DubanForm extends Component {
                                     <Label>所属组织</Label>
                                     <RefWithInput option={options({
                                                   title: '所属组织',
-                                        refType: 3,//1:树形 2.单表 3.树卡型 4.多选 5.default
+                                        refType: 1,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
                                         param: {//url请求参数
-                                            refCode: 'common_ref_treecard',
+                                            refCode: 'neworganizition',
                                             tenantId: '',
                                             sysId: '',
-                                            transmitParam: '3',
+                                            transmitParam: '1',
                                         },
                                         keyList:(refKeyArrayunitid && refKeyArrayunitid.split(',')) || [],//选中的key
                                         onSave: function (sels) {
@@ -283,7 +290,7 @@ class DubanForm extends Component {
                                                 refKeyArrayunitid: temp.join(),
                                             })
                                         },
-                                        showKey:'peoname',
+                                        showKey:'refname',
                                         verification:true,//是否进行校验
                                         verKey:'unitid',//校验字段
                                         verVal:""

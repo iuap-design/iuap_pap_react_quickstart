@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import { actions } from "mirrorx";
 import queryString from 'query-string';
+import {FormattedMessage, FormattedDate, FormattedNumber} from 'react-intl';
 import { Switch, InputNumber,Loading, Table, Button, Col, Row, Icon, InputGroup, FormControl, Checkbox, Modal, Panel, PanelGroup, Label, Message, Radio } from "tinper-bee";
 import { BpmTaskApprovalWrap } from 'yyuap-bpm';
 import AcUpload from 'ac-upload';
@@ -16,6 +17,7 @@ import 'yyuap-ref/dist2/yyuap-ref.css'//参照样式
 import './edit.less';
 import 'ac-upload/build/ac-upload.css';
 import ChildTableDubanSub from '../DubanSub-childtable';
+import { setCookie, getCookie} from "utils";
 
 const FormItem = Form.FormItem;
 const Option = Select.Option;
@@ -32,7 +34,7 @@ class Edit extends Component {
                 refKeyArrayxbDw:[],
                 refKeyArrayunitid:[],
                 refKeyArrayzrr:[],
-            fileNameData: props.rowData.attachment || [],//上传附件数据
+            // fileNameData: props.rowData.attachment || [],//上传附件数据
         }
     }
     async componentWillMount() {
@@ -53,10 +55,7 @@ class Edit extends Component {
     }
     save = () => {//保存
         this.props.form.validateFields(async (err, values) => {
-            values.attachment = [];
-            for(let i=0,len=this.state.fileNameData.length; i<len; i++ ) {
-              values.attachment =  values.attachment.concat(this.state.fileNameData[i].data);
-            }
+            values.attachment = this.state.fileNameData;
             let numArray = [
                 "rwpf",
                 "jdBl",
@@ -88,6 +87,7 @@ class Edit extends Component {
                 values.unitid = refKeyArrayunitid.join();
                 values.zrr = refKeyArrayzrr.join();
                 values.endDate = values.endDate.format(format);
+                values.beginDate = values.beginDate.format(format);
                     let {childListDubanSub,cacheArrayDubanSub,delArrayDubanSub} = this.props;
                     // 编辑保存但是未修改参照,修改参照字段为参照id数组
                     if(childListDubanSub) {
@@ -195,29 +195,21 @@ class Edit extends Component {
 
     // 动态显示标题
     onChangeHead = (btnFlag) => {
-        let titleArr = ["新增","编辑","详情"];
+        let titleArr = [   <FormattedMessage
+            id="intl.duban.button.create"
+        />,"编辑","详情"];
         return titleArr[btnFlag]||'新增';
     }
     //上传成功后的回调
-    handlerUploadSuccess = (data) => {
+    handlerUploadSuccess = (res) => {
         Message.create({content: '上传成功', color: 'success'});
-        let searchObj = queryString.parse(this.props.location.search);
-        let id = searchObj.search_id;
-        if (searchObj.btnFlag == 0) {
-
-        } else if (searchObj.btnFlag == 1) {
-            // if (data.length > 0) {
-            //     data[0]['id'] = id;
-            // }
-        }
 
         this.setState(({ fileNameData }) => {
             //拿到当前原始对象
             let newFileList = [];
             //找到历史数据合并
-            newFileList = newFileList.concat(fileNameData);
-            //原始数据合并新数据
-            newFileList = newFileList.concat(data);
+            newFileList = newFileList.concat(fileNameData,res.data);
+
             return {
                 fileNameData: newFileList
             };
@@ -246,16 +238,51 @@ class Edit extends Component {
         })
     }
 
-    showBpmComponent = (btnFlag, rowData) => {
+    // 流程图相关回调函数
+    onBpmStart = () => {
+        actions.Duban.updateState({ showLoading: true });
+    }
+    onBpmEnd = () => {
+        actions.Duban.updateState({ showLoading: false });
+    }
+    onBpmSuccess = () => {
+        actions.Duban.updateState({ showLoading: false });
+        // actions.routing.push('pagination-table');
+        actions.routing.goBack();
+    }
+    onBpmError = () => {
+        actions.Duban.updateState({ showLoading: false });
+    }
+
+    // 审批面板展示
+    showBpmComponent = (btnFlag, appType, id, processDefinitionId, processInstanceId, rowData) => {
         // btnFlag为2表示为详情
         if ((btnFlag == 2) && rowData && rowData['id']) {
             console.log("showBpmComponent", btnFlag)
             return (
-                <BpmTaskApprovalWrap
-                    id={rowData.id}
-                    onBpmFlowClick={() => { this.onClickToBPM(rowData) }}
-                    appType={"1"}
-                />
+                <div >
+                    {appType == 1 &&<BpmTaskApprovalWrap
+                        id={rowData.id}
+                        onBpmFlowClick={() => { this.onClickToBPM(rowData) }}
+                        appType={appType}
+                        onStart={this.onBpmStart}
+                        onEnd={this.onBpmEnd}
+                        onSuccess={this.onBpmSuccess}
+                        onError={this.onBpmError}
+                    />}
+                    {appType == 2 &&<BpmTaskApprovalWrap
+                        id={id}
+                        processDefinitionId={processDefinitionId}
+                        processInstanceId={processInstanceId}
+                        onBpmFlowClick={() => { this.onClickToBPM(rowData) }}
+                        appType={appType}
+                        onStart={this.onBpmStart}
+                        onEnd={this.onBpmEnd}
+                        onSuccess={this.onBpmSuccess}
+                        onError={this.onBpmError}
+                    />}
+                </div>
+
             );
         }
     }
@@ -274,8 +301,9 @@ class Edit extends Component {
 
     render() {
         const self = this;
+        const {intl} = this.props;
 
-        let { btnFlag } = queryString.parse(this.props.location.search);
+        let { btnFlag,appType, id, processDefinitionId, processInstanceId } = queryString.parse(this.props.location.search);
         btnFlag = Number(btnFlag);
         let {rowData,
                     refKeyArrayxbr,
@@ -318,7 +346,7 @@ class Edit extends Component {
                     ) : ''}
                 </Header>
                 {
-                    self.showBpmComponent(btnFlag, rowData)
+                    self.showBpmComponent(btnFlag, appType ? appType : "1", id, processDefinitionId, processInstanceId, rowData)
                 }
                 <Row className='detail-body'>
 
@@ -370,7 +398,7 @@ class Edit extends Component {
                                     协办人：
                                 </Label>
                                     <RefWithInput disabled={btnFlag == 2} option={options({
-                                                  title: '协办人',
+                                        title: '协办人',
                                         refType: 2,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
                                         param: {//url请求参数
@@ -378,6 +406,7 @@ class Edit extends Component {
                                             tenantId: '',
                                             sysId: '',
                                             transmitParam: '2',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayxbr,//选中的key
@@ -405,7 +434,7 @@ class Edit extends Component {
                                     主办人：
                                 </Label>
                                     <RefWithInput disabled={btnFlag == 2} option={options({
-                                                  title: '主办人',
+                                        title: '主办人',
                                         refType: 6,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
                                         param: {//url请求参数
@@ -413,6 +442,7 @@ class Edit extends Component {
                                             tenantId: '',
                                             sysId: '',
                                             transmitParam: '6',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayzbr,//选中的key
@@ -449,7 +479,7 @@ class Edit extends Component {
                                         {
                                             ...getFieldProps('rwpf', {
                                                     initialValue: rwpf&&Number(rwpf).toFixed(2) || '0.00',
-                                                    rules: [{type: 'string',pattern: /^(?:(?!0\.00$))[\d\D]*$/ig,message: '请输入数字'}],
+                                                    //rules: [{type: 'string',pattern: /^(?:(?!0\.00$))[\d\D]*$/ig,message: '请输入数字'}],
                                             })
                                         }
                                     />
@@ -470,10 +500,18 @@ class Edit extends Component {
                                             }],
                                         }
                                         )}>
-                                        <Option value="">请选择</Option>
-                                            <Option value="1">领导交办</Option>
-                                            <Option value="2">会议纪要</Option>
-                                            <Option value="3">其他</Option>
+                                        <Option value=""><FormattedMessage
+                                            id="intl.duban.table.source.option"
+                                        /></Option>
+                                        <Option value="1"><FormattedMessage
+                                            id="intl.duban.table.source.leadOffice"
+                                        /></Option>
+                                        <Option value="2"><FormattedMessage
+                                            id="intl.duban.table.source.meetingSummary"
+                                        /></Option>
+                                        <Option value="3"><FormattedMessage
+                                            id="intl.duban.table.source.other"
+                                        /></Option>
                                     </Select>
 
 
@@ -491,7 +529,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: qtLd || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入牵头领导',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入牵头领导',
                                             }],
                                         }
                                         )}
@@ -515,6 +553,7 @@ class Edit extends Component {
                                             tenantId: '',
                                             sysId: '',
                                             transmitParam: '1',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayzrDw,//选中的key
@@ -551,7 +590,7 @@ class Edit extends Component {
                                         {
                                             ...getFieldProps('jdBl', {
                                                     initialValue: jdBl&&Number(jdBl).toFixed(2) || '0.00',
-                                                    rules: [{type: 'string',pattern: /^(?:(?!0\.00$))[\d\D]*$/ig,message: '请输入数字'}],
+                                                    //rules: [{type: 'string',pattern: /^(?:(?!0\.00$))[\d\D]*$/ig,message: '请输入数字'}],
                                             })
                                         }
                                     />
@@ -592,7 +631,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: dbInfo || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入督办事宜',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入督办事宜',
                                             }],
                                         }
                                         )}
@@ -636,7 +675,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: jfyq || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入交付要求',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入交付要求',
                                             }],
                                         }
                                         )}
@@ -653,13 +692,14 @@ class Edit extends Component {
                                 </Label>
                                     <RefWithInput disabled={btnFlag == 2} option={options({
                                                   title: '协办单位',
-                                        refType: 5,//1:树形 2.单表 3.树卡型 4.多选 5.default
+                                        refType: 1,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
                                         param: {//url请求参数
-                                            refCode: 'common_ref',
+                                            refCode: 'neworganizition',
                                             tenantId: '',
                                             sysId: '',
-                                            transmitParam: '5',
+                                            transmitParam: '1',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayxbDw,//选中的key
@@ -671,7 +711,7 @@ class Edit extends Component {
                                                 refKeyArrayxbDw: temp,
                                             })
                                         },
-                                        showKey:'peoname',
+                                        showKey:'refname',
                                         verification:true,//是否进行校验
                                         verKey:'xbDw',//校验字段
                                         verVal:xbDw
@@ -683,20 +723,21 @@ class Edit extends Component {
                                 </span>
                             </Col>
                             <Col md={4} xs={6}>
-                                <Label>
+                                <Label class="datepicker">
                                     计划开始时间：
                                 </Label>
-                                    <FormControl disabled={btnFlag == 2||false}
-                                        {
-                                        ...getFieldProps('beginDate', {
-                                            validateTrigger: 'onBlur',
-                                            initialValue: beginDate || '',
-                                            rules: [{
-                                                type:'string',required: true, message: '请输入计划开始时间',
-                                            }],
-                                        }
-                                        )}
-                                    />
+                                <DatePicker className='form-item' disabled={btnFlag == 2}
+                                    format={format}
+                                    {
+                                    ...getFieldProps('beginDate', {
+                                        initialValue: beginDate? moment(beginDate):moment(),
+                                        validateTrigger: 'onBlur',
+                                        rules: [{
+                                            required: true, message: '请选择计划开始时间',
+                                        }],
+                                    }
+                                    )}
+                                />
 
 
                                 <span className='error'>
@@ -736,7 +777,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: lySm || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入备注',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入备注',
                                             }],
                                         }
                                         )}
@@ -757,7 +798,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: dbr || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入督办人',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入督办人',
                                             }],
                                         }
                                         )}
@@ -778,7 +819,7 @@ class Edit extends Component {
                                             validateTrigger: 'onBlur',
                                             initialValue: name || '',
                                             rules: [{
-                                                type:'string',required: true, message: '请输入督办名称',
+                                                type:'string',required: true,pattern: /\S+/ig, message: '请输入督办名称',
                                             }],
                                         }
                                         )}
@@ -795,13 +836,14 @@ class Edit extends Component {
                                 </Label>
                                     <RefWithInput disabled={btnFlag == 2} option={options({
                                                   title: '所属组织',
-                                        refType: 3,//1:树形 2.单表 3.树卡型 4.多选 5.default
+                                        refType: 1,//1:树形 2.单表 3.树卡型 4.多选 5.default
                                         className: '',
                                         param: {//url请求参数
-                                            refCode: 'common_ref_treecard',
+                                            refCode: 'neworganizition',
                                             tenantId: '',
                                             sysId: '',
-                                            transmitParam: '3',
+                                            transmitParam: '1',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayunitid,//选中的key
@@ -813,7 +855,7 @@ class Edit extends Component {
                                                 refKeyArrayunitid: temp,
                                             })
                                         },
-                                        showKey:'peoname',
+                                        showKey:'refname',
                                         verification:true,//是否进行校验
                                         verKey:'unitid',//校验字段
                                         verVal:unitid
@@ -860,6 +902,7 @@ class Edit extends Component {
                                             tenantId: '',
                                             sysId: '',
                                             transmitParam: '4',
+                                            locale:getCookie('u_locale'),
                                         },
 
                                         keyList:refKeyArrayzrr,//选中的key
@@ -882,7 +925,7 @@ class Edit extends Component {
                                     {getFieldError('zrr')}
                                 </span>
                             </Col>
-                        <Col md={4} xs={6}>
+                        {/* <Col md={4} xs={6}>
                             <Label>
                                 附件：
                             </Label>
@@ -911,7 +954,7 @@ class Edit extends Component {
                                         </AcUpload>
                                     )
                             }
-                        </Col>
+                        </Col> */}
                 </Row>
 
                         <div className="master-tag">

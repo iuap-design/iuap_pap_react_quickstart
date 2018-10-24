@@ -54,7 +54,7 @@ export default class DubanSelectTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zrrName",
+                    title: "责任人",
                     dataIndex: "zrrName",
                     key: "zrrName",
                     width: 100,
@@ -102,7 +102,7 @@ export default class DubanSelectTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zrdwName",
+                    title: "责任单位",
                     dataIndex: "zrdwName",
                     key: "zrdwName",
                     width: 100,
@@ -120,13 +120,13 @@ export default class DubanSelectTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "xbrName",
+                    title: "协办人",
                     dataIndex: "xbrName",
                     key: "xbrName",
                     width: 100,
                 },
                 {
-                    title: "xbDwName",
+                    title: "协办单位",
                     dataIndex: "xbDwName",
                     key: "xbDwName",
                     width: 100,
@@ -150,7 +150,7 @@ export default class DubanSelectTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zbrName",
+                    title: "主办人",
                     dataIndex: "zbrName",
                     key: "zbrName",
                     width: 100,
@@ -168,7 +168,7 @@ export default class DubanSelectTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "unitIdName",
+                    title: "所属组织",
                     dataIndex: "unitIdName",
                     key: "unitIdName",
                     width: 100,

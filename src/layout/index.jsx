@@ -1,15 +1,27 @@
 import React, { Component } from "react";
-import { Router,Switch,withRouter } from "mirrorx";
-import { Transition,TransitionGroup,CSSTransition} from 'react-transition-group'
-import LayoutHeader from './LayoutHeader';
-import Sidebar from './Sidebar/index.js';
+import { Router,Switch,connect,withRouter,actions } from "mirrorx";
+
 import "./index.less";
 import "./animation.css";
-
+import zhCN from "../components/Intl/locales/zh";
+import enUS from "../components/Intl/locales/en";
 
 class MainLayout extends Component {
     constructor(props) {
         super(props);
+    }
+    changeLocale(){
+        const {locale} = this.props;
+
+        let data = (locale!="zh_CN")?{
+                locale: "zh_CN",
+                localeData: zhCN
+            }:{
+            locale: "en_US",
+            localeData: enUS
+        };
+
+        actions.intl.updateState(data)
     }
     render() {
         const {location,Routes} = this.props;
@@ -19,17 +31,17 @@ class MainLayout extends Component {
         return (
 
             <div className="honey-container">
-                {/*{ (__MODE__ == "development") ?  <Sidebar /> : "" }*/}
-                <div className="page-layout">
-                    {/*{ (__MODE__ == "development") ? <LayoutHeader /> : "" }*/}
 
-                    <TransitionGroup component="main" className="page-main">
-                        <CSSTransition key={currentKey} timeout={timeout} classNames="fade" appear>
-                            <Switch location={location}>
-                                <Routes />
-                            </Switch>
-                        </CSSTransition>
-                    </TransitionGroup>
+                <div className="page-layout">
+
+                    <div onClick={this.changeLocale.bind(this)}>
+                        切换语言
+                    </div>
+                    <div  className="page-main">
+                        <Switch location={location}>
+                            <Routes />
+                        </Switch>
+                    </div>
                 </div>
             </div>
 
@@ -37,4 +49,4 @@ class MainLayout extends Component {
     }
 }
 
-export default  withRouter(MainLayout)
+export default  withRouter(connect(state => state.intl)(MainLayout))

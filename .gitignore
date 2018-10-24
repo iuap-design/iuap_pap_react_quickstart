@@ -1,22 +1,3 @@
-Skip to content
-
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- @zhaoyuchief Sign out
-4
-0 6 iuap-design/iuap_pap_react
-forked from yonyou-iuap/iuap_pap_react
- Code  Pull requests 0  Projects 0  Wiki  Insights  Settings
-iuap_pap_react/.gitignore
-2359c33  28 days ago
-@GuoYongfeng GuoYongfeng update styles
-@GuoYongfeng @kvkens @liushaozhen
-
-66 lines (49 sloc)  943 Bytes
 # Logs
 logs
 *.log
@@ -52,8 +33,8 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 build
+node_modules/
 jspm_packages/
 
 # Typescript v1 declaration files
@@ -77,23 +58,7 @@ typings/
 # dotenv environment variables file
 .env
 dist
-*.zip
-*.war
+dist.*
 
 .idea
 package-lock.json
-.DS_Store
-.vscode/
-© 2018 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Help
-Contact GitHub
-API
-Training
-Shop
-Blog
-About
-Press h to open a hovercard with more details.

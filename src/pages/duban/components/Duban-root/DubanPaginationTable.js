@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
 import PaginationTable from 'components/PaginationTable'
+import {FormattedMessage, FormattedDate, FormattedNumber} from 'react-intl';
 import {BpmButtonSubmit,BpmButtonRecall} from 'yyuap-bpm';
 import { actions } from 'mirrorx';
-import { Button,Message,Modal } from 'tinper-bee';
+import { Button,Message,Modal, Loading } from 'tinper-bee';
 import Select from 'bee-select';
 import moment from "moment/moment";
 import Header from 'components/Header';
 import DubanForm from '../Duban-form';
+import AcExport from '../Duban-export';
 import AcUpload from 'ac-upload';
+import { success, Error } from 'utils';
 import 'ac-upload/build/ac-upload.css';
 import './index.less'
+
+
 export default class DubanPaginationTable extends Component {
     constructor(props){
         super(props);
@@ -22,31 +27,41 @@ export default class DubanPaginationTable extends Component {
             delData:[],
             column:[
                 {
-                    title: "督办编号",
+                    title: <FormattedMessage
+                        id="intl.table.number"
+                    />,
                     dataIndex: "code",
                     key: "code",
                      width:200,
                 },
                 {
-                    title: "计划结束时间",
+                    title: <FormattedMessage
+                        id="intl.table.endTime"
+                    />,
                     dataIndex: "endDate",
                     key: "endDate",
                      width:200,
                 },
                 {
-                    title: "zrrName",
+                    title: <FormattedMessage
+                    id="intl.table.liable"
+                    />,
                     dataIndex: "zrrName",
                     key: "zrrName",
                      width:200,
                 },
                 {
-                    title: "任务评分",
+                    title: <FormattedMessage
+                        id="intl.table.taskScore"
+                    />,
                     dataIndex: "rwpf",
                     key: "rwpf",
                      width:200,
                 },
                 {
-                    title: "督办来源",
+                    title: <FormattedMessage
+                        id="intl.table.source"
+                    />,
                     dataIndex: "lyCode",
                     key: "lyCode",
                      width:200,
@@ -56,33 +71,80 @@ export default class DubanPaginationTable extends Component {
                             disabled = {true}
                             value={ text || '' }
                         >
-                            <Option value="">请选择</Option>
-                                <Option value="1">领导交办</Option>
-                                <Option value="2">会议纪要</Option>
-                                <Option value="3">其他</Option>
+                            <Option value=""><FormattedMessage
+                                id="intl.table.source.option"
+                            /></Option>
+                                <Option value="1"><FormattedMessage
+                                    id="intl.table.source.leadOffice"
+                                /></Option>
+                                <Option value="2"><FormattedMessage
+                                    id="intl.table.source.meetingSummary"
+                                /></Option>
+                                <Option value="3"><FormattedMessage
+                                    id="intl.table.source.other"
+                                /></Option>
                         </Select>
                     )
                 },
                 {
-                    title: "牵头领导",
+                    title: <FormattedMessage
+                        id="intl.table.orderStatus"
+                    />,
+                    dataIndex: "bpmState",
+                    key: "bpmState",
+                     width:200,
+                    render : (text, record, index) => (
+                        <Select
+                            className = "hideselect"
+                            disabled = {true}
+                            value={ typeof text === 'number' ? `${text}` : '0' }
+                        >
+                            <Option value=""><FormattedMessage
+                                id="intl.table.orderStatus.option"
+                            /></Option>
+                            <Option value="0"><FormattedMessage
+                                id="intl.table.orderStatus.confirm"
+                            /></Option>
+                            <Option value="1"><FormattedMessage
+                                id="intl.table.orderStatus.executing"
+                            /></Option>
+                            <Option value="2"><FormattedMessage
+                                id="intl.table.orderStatus.done"
+                            /></Option>
+                            <Option value="3"><FormattedMessage
+                                id="intl.table.orderStatus.end"
+                            /></Option>
+                        </Select>
+                    )
+                },
+                {
+                    title: <FormattedMessage
+                        id="intl.table.leadLeader"
+                    />,
                     dataIndex: "qtLd",
                     key: "qtLd",
                      width:200,
                 },
                 {
-                    title: "进度比例",
+                    title: <FormattedMessage
+                        id="intl.table.progressRatio"
+                    />,
                     dataIndex: "jdBl",
                     key: "jdBl",
                      width:200,
                 },
                 {
-                    title: "zrdwName",
+                    title: <FormattedMessage
+                        id="intl.table.responsibilityUnit"
+                    />,
                     dataIndex: "zrdwName",
                     key: "zrdwName",
                      width:200,
                 },
                 {
-                    title: "状态",
+                    title: <FormattedMessage
+                        id="intl.table.state"
+                    />,
                     dataIndex: "state",
                     key: "state",
                      width:200,
@@ -99,25 +161,33 @@ export default class DubanPaginationTable extends Component {
                     )
                 },
                 {
-                    title: "督办事宜",
+                    title: <FormattedMessage
+                        id="intl.table.supervisionMatters"
+                    />,
                     dataIndex: "dbInfo",
                     key: "dbInfo",
                      width:200,
                 },
                 {
-                    title: "xbrName",
+                    title: <FormattedMessage
+                        id="intl.table.coordinator"
+                    />,
                     dataIndex: "xbrName",
                     key: "xbrName",
                      width:200,
                 },
                 {
-                    title: "xbDwName",
+                    title: <FormattedMessage
+                        id="intl.table.cooperatingunit"
+                    />,
                     dataIndex: "xbDwName",
                     key: "xbDwName",
                      width:200,
                 },
                 {
-                    title: "kpi级别",
+                    title: <FormattedMessage
+                        id="intl.table.kpiLevel"
+                    />,
                     dataIndex: "kpiLevel",
                     key: "kpiLevel",
                      width:200,
@@ -134,25 +204,33 @@ export default class DubanPaginationTable extends Component {
                     )
                 },
                 {
-                    title: "交付要求",
+                    title: <FormattedMessage
+                        id="intl.table.delivery"
+                    />,
                     dataIndex: "jfyq",
                     key: "jfyq",
                      width:200,
                 },
                 {
-                    title: "zbrName",
+                    title: <FormattedMessage
+                        id="intl.table.sponsor"
+                    />,
                     dataIndex: "zbrName",
                     key: "zbrName",
                      width:200,
                 },
                 {
-                    title: "计划开始时间",
+                    title: <FormattedMessage
+                        id="intl.table.startTime"
+                    />,
                     dataIndex: "beginDate",
                     key: "beginDate",
                      width:200,
                 },
                 {
-                    title: "是否kpi",
+                    title: <FormattedMessage
+                        id="intl.table.isKpi"
+                    />,
                     dataIndex: "kpiFlag",
                     key: "kpiFlag",
                      width:200,
@@ -169,34 +247,44 @@ export default class DubanPaginationTable extends Component {
                     )
                 },
                 {
-                    title: "unitIdName",
+                    title: <FormattedMessage
+                        id="intl.table.affiliatedOrganization"
+                    />,
                     dataIndex: "unitIdName",
                     key: "unitIdName",
                      width:200,
                 },
                 {
-                    title: "备注",
+                    title: <FormattedMessage
+                        id="intl.table.remarks"
+                    />,
                     dataIndex: "lySm",
                     key: "lySm",
                      width:200,
                 },
                 {
-                    title: "督办人",
+                    title: <FormattedMessage
+                        id="intl.table.supervisor"
+                    />,
                     dataIndex: "dbr",
                     key: "dbr",
                      width:200,
                 },
                 {
-                    title: "督办名称",
+                    title: <FormattedMessage
+                        id="intl.table.supervisionName"
+                    />,
                     dataIndex: "name",
                     key: "name",
                      width:200,
                 },
                 {
-                    title: "重要程度",
+                    title: <FormattedMessage
+                        id="intl.table.importance"
+                    />,
                     dataIndex: "zyCd",
                     key: "zyCd",
-                     width:200,
+                    width:200,
                     render : (text, record, index) => (
                         <Select
                             className = "hideselect"
@@ -210,7 +298,9 @@ export default class DubanPaginationTable extends Component {
                     )
                 },
                 {
-                    title: "操作",
+                    title: <FormattedMessage
+                        id="intl.table.operation"
+                    />,
                     dataIndex: "d",
                     key: "d",
                     width:100,
@@ -228,7 +318,7 @@ export default class DubanPaginationTable extends Component {
             ]
         }
     }
-    
+
     componentDidMount(){
         // this.setState({ step: this.props.pageSize })
         actions.Duban.loadList();//table数据
@@ -282,6 +372,9 @@ export default class DubanPaginationTable extends Component {
         actions.Duban.loadList({
             pageSize: value
         })
+        actions.Duban.updateState({
+            pageSize: value
+        })
     }
 
     // 分页组件点击页面数字索引执行函数
@@ -289,24 +382,27 @@ export default class DubanPaginationTable extends Component {
         actions.Duban.loadList({
             pageIndex: value
         })
+        actions.Duban.updateState({
+            pageIndex: value
+        })
     }
 
     // 流程提交成功后回调函数
     onSubmitSuc = async ()=>{
         await actions.Duban.loadList();
-        actions.Duban.updateState({showLine:false});
+        actions.Duban.updateState({showLoading:false});
         Message.create({content: '单据提交成功', color: 'success'});
 
     }
-    
+
     // 提交操作初始执行操作
     onSubmitStart = ()=>{
-        actions.Duban.updateState({showLine:true});
+        actions.Duban.updateState({showLoading:true});
 
     }
     // 提交失败回调函数
     onSubmitFail = (error)=>{
-        actions.Duban.updateState({showLine:false});
+        actions.Duban.updateState({showLoading:false});
         Message.create({content: error.msg, color: 'danger'});
 
     }
@@ -314,15 +410,15 @@ export default class DubanPaginationTable extends Component {
     // 撤回成功回调函数
     onRecallSuc = async ()=>{
         console.log("onRecallSuc 成功进入recall回调");
-        await actions.searchTable.loadList();
-        actions.Duban.updateState({showLine:false});
+        await actions.Duban.loadList();
+        actions.Duban.updateState({showLoading:false});
         Message.create({content: '单据撤回成功', color: 'success'});
 
     }
 
     // 撤回失败回调函数
     onRecallFail = (error)=>{
-        actions.Duban.updateState({showLine:false});
+        actions.Duban.updateState({showLoading:false});
         Message.create({content: error.msg, color: 'danger'});
 
     }
@@ -334,7 +430,7 @@ export default class DubanPaginationTable extends Component {
 
     // 撤回操作执行起始函数,通常用于设置滚动条
     onRecallStart = ()=>{
-        actions.Duban.updateState({showLine:true});
+        actions.Duban.updateState({showLoading:true});
     }
 
     // 查看方法
@@ -367,11 +463,17 @@ export default class DubanPaginationTable extends Component {
         window.open(`${GROBAL_HTTP_CTX}/DUBAN/excelTemplateDownload`)
     }
 
-    // 导入成功回调函数
+    // 导入回调
     handlerUploadSuccess = (data)=>{
-        // 导入成功后，列表加载数据
-        Message.create({content: '导入数据成功', color: 'success'});
-        actions.Duban.loadList();
+        console.log("data", data);
+        if (data.status && data.status === "success") {
+            // 导入成功后，列表加载数据
+            success('导入数据成功');
+            actions.Duban.loadList();
+        } else {
+            // 导入失败后
+            Error(`${data.msg ? data.msg : '导入失败'}`);
+        }
     }
 
     // 导入删除回调函数
@@ -379,14 +481,9 @@ export default class DubanPaginationTable extends Component {
 
     }
 
-    // 导出
-    exportExcel = () =>{
-        actions.Duban.exportExcel(this.queryParams);
-    }
-
     // 打印数据
     printExcel = ()=>{
-        if(!this.state.selectData.length)  
+        if(!this.state.selectData.length)
         {
             Message.create({ content: '请选择需打印的数据', color : 'danger'  });
             return;
@@ -397,7 +494,7 @@ export default class DubanPaginationTable extends Component {
                 funccode: 'Duban',
                 nodekey: '002'
             },
-            printParams: 
+            printParams:
             {
                 id:this.state.selectData[0].id
             }
@@ -417,14 +514,21 @@ export default class DubanPaginationTable extends Component {
         const self=this;
         let { list, showLoading, pageIndex, pageSize, totalPages , total } = this.props;
         let {selectData,showModal} = this.state;
-        console.log("list",list)
+        let exportProps = {total,pageIndex,pageSize,selectData, list };
+        //console.log("list",list)
+
         return (
             <div className='Duban-root'>
-                <Header title='平台-督办任务主表'/>
+1111111111
+                <Header title={<FormattedMessage
+                    id="intl.title"
+                />} />
                 <DubanForm { ...this.props }/>
                 <div className='table-header mt25'>
                     <Button colors="primary" style={{"marginLeft":15}} size='sm' onClick={() => { self.cellClick({},0) }}>
-                    新增
+                        <FormattedMessage
+                        id="intl.button.create"
+                    />
                     </Button>
                     <BpmButtonSubmit
                             className="ml5 "
@@ -438,7 +542,11 @@ export default class DubanPaginationTable extends Component {
                             onStart={this.onSubmitStart}
                             onEnd={this.onSubmitEnd}
                     >
-                        <Button size='sm' style={{"marginLeft":"15px"}} className="admin"  colors="primary">提交</Button>
+                        <Button size='sm' style={{"marginLeft":"15px"}} className="admin"  colors="primary">
+                            <FormattedMessage
+                                id="intl.button.submit"
+                            />
+                        </Button>
                     </BpmButtonSubmit>
                     <BpmButtonRecall
                             className="ml5 "
@@ -449,32 +557,45 @@ export default class DubanPaginationTable extends Component {
                             onStart = {this.onRecallStart}
                             onEnd={this.onSubmitEnd}
                     >
-                        <Button size='sm' style={{"marginLeft":"15px"}} className="admin"  colors="primary">收回</Button>
+                        <Button size='sm' style={{"marginLeft":"15px"}} className="admin"  colors="primary">
+                             <FormattedMessage
+                            id="intl.button.recovery"
+                        />
+                        </Button>
                     </BpmButtonRecall>
-                   
+
 
                     <Button colors="primary" className="ml5" size='sm' onClick={() => { self.printExcel() }}>
-                        打印
+                        <FormattedMessage
+                            id="intl.button.print"
+                        />
                     </Button>
 
-                    <Button colors="primary" className="ml5" size='sm' onClick={ self.onLoadTemplate}>模板下载</Button>
+                    <Button colors="primary" className="ml5" size='sm' onClick={ self.onLoadTemplate}>
+                        <FormattedMessage
+                            id="intl.button.templateDownload"
+                        />
+                    </Button>
                     <AcUpload
-                        title={"导入"}
+                        title={<FormattedMessage
+                            id="intl.button.import"
+                        />}
                         action={`${GROBAL_HTTP_CTX}/DUBAN/toImportExcel`}
                         multiple={false}
                         onError={() => console.log('上传报错了')}
                         onSuccess={self.handlerUploadSuccess}
                         onDelete={ self.handlerUploadDelete}
                     >
-                        <Button className="ml5" colors="primary" size='sm'>导入</Button>
+                        <Button className="ml5" colors="primary" size='sm'>
+                            <FormattedMessage
+                                id="intl.button.import"
+                            />
+                        </Button>
                     </AcUpload>
-                    <Button colors="primary" className="ml5" size='sm' onClick={() => { self.exportExcel() }}>
-                        导出
-                    </Button>
+                    <AcExport {...exportProps} className="ml5"/>
                 </div>
                 <PaginationTable
                         data={list}
-                        showLoading={showLoading}
                         pageIndex={pageIndex}
                         pageSize={pageSize}
                         totalPages={totalPages}
@@ -485,8 +606,8 @@ export default class DubanPaginationTable extends Component {
                         onTableSelectedData={this.onTableSelectedData}
                         onPageSizeSelect={this.onPageSizeSelect}
                         onPageIndexSelect={this.onPageIndexSelect}
-                        scroll={{x: this.getCloumnsScroll(this.state.column), y: 500}}
                 />
+                <Loading container={this} show={showLoading} loadingType="line" />
                 <Modal
                         show={showModal}
                         onHide={this.close} >

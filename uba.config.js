@@ -8,11 +8,8 @@ const CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const pathUrl = ''; //http://127.0.0.1:8080 设置host，可选
-const context = '/fe';//工程节点名称
+const context = '/react_example_fe';//工程节点名称
 const contentBase = './build'+context;//打包目录
-const staticConfig = {
-    folder: "dll"
-};
 
 
 let entries = {};
@@ -22,45 +19,45 @@ let prodChunks = [];
 let htmlEntrys = [];
 
 const svrConfig = {
-  historyApiFallback: false
+    historyApiFallback: false
 };
 
 // 远程代理访问，可以配置多个代理服务：https://github.com/chimurai/http-proxy-middleware
 const proxyConfig = [
-    {
-        enable: true,
-        headers: {
-            // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-            "Referer": "http://172.20.52.107:8080"
-        },
-        // context，如果不配置，默认就是代理全部。
-        router: [
-            '/wbalone', '/iuap-example','/eiap-plus/','/newref/', '/print_service/', '/iuap-print/'
-        ],
-        url: 'http://172.20.52.107:8080'
+  {
+    enable: true,
+    headers: {
+      // 这是之前网页的地址，从中可以看到当前请求页面的链接。
+      "Referer": "http://172.20.1.205:8080"
     },
-    // 后台开发服务
-    {
-        enable: true,
-        headers: {
-            // 这是之前网页的地址，从中可以看到当前请求页面的链接。
-            "Referer": "http://172.20.52.107:8080"
-        },
-        // context，如果不配置，默认就是代理全部。
-        router: [
-            '/Duban'
-        ],
-        url: 'http://172.20.52.107:8080'
-    }
+    // context，如果不配置，默认就是代理全部。
+    router: [
+      '/wbalone', '/iuap-example','/eiap-plus/','/newref/'
+    ],
+    url: 'http://172.20.1.205:8080'
+  },
+  // 后台开发服务
+  {
+    enable: true,
+    headers: {
+      // 这是之前网页的地址，从中可以看到当前请求页面的链接。
+      "Referer": 'http://172.20.1.205:8080'
+    },
+    // context，如果不配置，默认就是代理全部。
+    router: [
+      '/react_example'
+    ],
+    url: 'http://172.20.1.205:8080'
+  }
 ];
 
 const globalEnvConfig = new webpack.DefinePlugin({
   __MODE__: JSON.stringify(process.env.NODE_ENV),
-  GROBAL_HTTP_CTX: JSON.stringify("/Duban"),
+  GROBAL_HTTP_CTX: JSON.stringify("/react_example"),
   GSP_CONTRACT: JSON.stringify("/gsp-contract"),
   GSP_ORDERS: JSON.stringify("/gsp-orders"),
   GSP_SUPPLIER: JSON.stringify("/gsp-supplier")
-});
+})
 
 const MINIMIZE_FLAG = (process.env.NODE_ENV == "production") ? true : false;
 
@@ -171,7 +168,8 @@ const devConfig = {
           filename:"vendors/[name].js"
       }),
         new ExtractTextPlugin({
-          filename: '[name].css',
+          filename: 'vendors/[name].css',
+          allChunks: true
         }),
     globalEnvConfig,
     new webpack.NamedModulesPlugin(),
@@ -211,11 +209,11 @@ glob.sync("./src/pages/**/app.jsx").forEach(path => {
 //生产环境的webpack配置
 const prodConfig = {
   devtool: 'source-map',
-    entry: prodEntries,
+  entry: prodEntries,
   output: {
     publicPath: pathUrl+context,
     path: path.resolve(__dirname, contentBase),
-    chunkFilename: 'js/[name].bundle.js',
+    chunkFilename: 'js/[name].[hash:8].bundle.js',
   },
   externals: externals,
   module: {
@@ -226,10 +224,10 @@ const prodConfig = {
           name: "vendors",
           filename:"vendors/[name].js"
       }),
-        new ExtractTextPlugin({
-            filename: '[name].css',
-            allChunks: true
-        }),
+    new ExtractTextPlugin({
+        filename: 'vendors/[name].css',
+        allChunks: true
+    }),
     globalEnvConfig,
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
@@ -289,6 +287,5 @@ module.exports = {
   devConfig,
   prodConfig,
   svrConfig,
-  proxyConfig,
-  staticConfig
+  proxyConfig
 };

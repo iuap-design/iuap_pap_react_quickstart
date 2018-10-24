@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { actions } from "mirrorx";
 import { Table,Button } from 'tinper-bee'
 import moment from "moment/moment";
-
+import {FormattedMessage, FormattedDate, FormattedNumber} from 'react-intl';
 import './index.less'
 
 // DubanTable 组件定义
@@ -66,7 +66,7 @@ class DubanTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zrrName",
+                    title: "责任人",
                     dataIndex: "zrrName",
                     key: "zrrName",
                     width: 100,
@@ -114,7 +114,7 @@ class DubanTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zrdwName",
+                    title: "责任单位",
                     dataIndex: "zrdwName",
                     key: "zrdwName",
                     width: 100,
@@ -132,13 +132,13 @@ class DubanTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "xbrName",
+                    title: "协办人",
                     dataIndex: "xbrName",
                     key: "xbrName",
                     width: 100,
                 },
                 {
-                    title: "xbDwName",
+                    title: "协办单位",
                     dataIndex: "xbDwName",
                     key: "xbDwName",
                     width: 100,
@@ -162,7 +162,7 @@ class DubanTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "zbrName",
+                    title: "主办人",
                     dataIndex: "zbrName",
                     key: "zbrName",
                     width: 100,
@@ -180,7 +180,7 @@ class DubanTable extends Component {
                     width: 100,
                 },
                 {
-                    title: "unitIdName",
+                    title: "所属组织",
                     dataIndex: "unitIdName",
                     key: "unitIdName",
                     width: 100,
@@ -244,7 +244,9 @@ class DubanTable extends Component {
                         colors="primary"
                         shape="border"
                         onClick={() => { self.cellClick({}, true) }}>
-                        新增
+                        <FormattedMessage
+                            id="intl.duban.button.create"
+                        />
                     </Button>
                 </div>
                 <Table

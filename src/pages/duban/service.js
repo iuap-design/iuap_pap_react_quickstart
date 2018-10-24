@@ -1,4 +1,5 @@
 import request from "utils/request";
+import axios from "axios";  
 
 //定义接口地址
 const URL = {
@@ -26,6 +27,7 @@ export const getList = (params) => {
             url+='&'+attr+'='+params[attr];
         }
     }
+    url = encodeURI(url);
     return request(url, {
         method: "get",
         data: params
@@ -103,17 +105,40 @@ export const printExcel = (params) => {
     window.open(exportUrl);     
     
 }
+
 /**
  * 导出
  */
 export const exportExcel = (params) => {
-
-    let search = [];
-    for(let key in params){
-        search.push(`${key}=${params[key]}`)
-    }
-    let exportUrl = `${URL.GET_TOEXPORTEXCEL}?${search.join('&')}`;
-    console.log(exportUrl);
-    window.open(exportUrl);     
-    
+    exportData(URL.GET_TOEXPORTEXCEL, params.dataList);
 }
+
+const selfURL = window[window.webkitURL ? 'webkitURL' : 'URL'];
+let exportData = (url,data) => {
+    axios({
+        method : 'post',
+        url : url,
+        data : data,
+        responseType : 'blob'
+    }).then((res) => {
+        const content = res.data;
+        const blob = new Blob([content]);
+        const fileName = "导出数据.xls";
+
+        let elink = document.createElement('a');
+        if('download' in elink) {
+            elink.download = fileName;
+            elink.style.display = 'none';
+            elink.href = selfURL['createObjectURL'](blob);
+            document.body.appendChild(elink);
+
+            // 触发链接
+            elink.click();
+            selfURL.revokeObjectURL(elink.href);
+            document.body.removeChild(elink)
+        } else {
+            navigator.msSaveBlob(blob, fileName);
+        }
+    })
+}
+

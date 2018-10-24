@@ -12,7 +12,7 @@ import Routes from './routes'
 import 'static/trd/tineper-bee/assets/tinper-bee.css'
 import "src/app.less";
 
-
+import Intl from 'components/Intl/index.js'
 
 const MiddlewareConfig = [];
 
@@ -25,6 +25,8 @@ mirror.defaults({
 
 
 
-render(<Router>
-    <MainLayout Routes={Routes} />
-</Router>, document.querySelector("#app"));
+render(<Intl>
+        <Router>
+            <MainLayout Routes={Routes} />
+        </Router>
+</Intl>, document.querySelector("#app"));

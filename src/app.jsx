@@ -8,6 +8,7 @@ import 'core-js/es6/set';
 import logger from "redux-logger";
 import mirror, { render,Router } from "mirrorx";
 import MainLayout from "./layout";
+import Intl from './components/Intl/index.js'
 
 import './static/trd/tineper-bee/assets/tinper-bee.css'
 import "./app.less";
@@ -21,6 +22,8 @@ mirror.defaults({
     middlewares: MiddlewareConfig
 });
 
-render(<Router>
-    <MainLayout />
-</Router>, document.querySelector("#app"));
+render(<Intl>
+    <Router>
+        <MainLayout />
+    </Router>
+</Intl>, document.querySelector("#app"));

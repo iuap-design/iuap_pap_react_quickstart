@@ -8,5 +8,9 @@ export default (url, options) => {
         params: options.param
     }).catch(function (err) {
         console.log(err);
+        if(err.response&&err.response.status==401){
+            console.log("RBAC鉴权失败!"+err.response.data.msg);
+            return Promise.resolve(err.response);
+        }
     });
 }

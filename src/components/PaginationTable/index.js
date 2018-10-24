@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
-import { Popover, Checkbox, Icon } from 'tinper-bee';
+import { Popover, Icon } from 'tinper-bee';
+import Checkbox from 'bee-checkbox';
 import Table from 'bee-table';
 import PropTypes from 'prop-types';
 import Pagination from 'bee-pagination';
 import multiSelect from "bee-table/build/lib/newMultiSelect";
 import filterColumn from "bee-table/build/lib/filterColumn";
 import dragColumn from "bee-table/build/lib/dragColumn";
+import {FormattedMessage, FormattedDate, FormattedNumber} from 'react-intl';
 
 import 'bee-table/build/Table.css';
 import 'bee-pagination/build/Pagination.css';
@@ -106,10 +107,32 @@ class PaginationTable extends Component {
             data, showLoading, pageSize,
             pageIndex, totalPages, columns,checkMinSize,
             onTableSelectedData, onPageSizeSelect, onPageIndexSelect,
-            scroll,title,footer,total,
+            scroll,title,footer,total,intl
         } = this.props;
         const step = this.state.step;
         let dataNumSelect = [step, step * 2, step * 3, step * 4];
+
+        var local={
+            'lang':'en',
+            'total': <FormattedMessage
+                id="intl.pagination.total"
+            />,
+            'items': <FormattedMessage
+                id="intl.pagination.items"
+            />,
+            'show': <FormattedMessage
+                id="intl.pagination.show"
+            />,
+            'goto':<FormattedMessage
+                id="intl.pagination.goto"
+            />,
+            'page':<FormattedMessage
+                id="intl.pagination.page"
+            />,
+            'ok':<FormattedMessage
+                id="intl.pagination.ok"
+            />
+        }
 
         return (
             <div className="table-list">
@@ -142,6 +165,7 @@ class PaginationTable extends Component {
                         maxButtons={5}
                         dataNumSelect={dataNumSelect}
                         total={total}
+                        locale={local}
                     />
                 </div>
             </div>

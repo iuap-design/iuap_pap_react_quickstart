@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Panel,Button } from 'tinper-bee';
+import {FormattedMessage, FormattedDate, FormattedNumber} from 'react-intl';
 import PropTypes from 'prop-types';
 import './index.less';
 import classnames from 'classnames';
@@ -19,7 +20,9 @@ const defaultProps = {
     searchOpen:false,
     search: () => {},
     reset: () => {},
-    title: "查询与筛选"
+    title: <FormattedMessage
+        id="components.searchPanel.title"
+    />
 };
 
 
@@ -63,7 +66,11 @@ class SearchPanel extends Component {
                         {this.props.title}
                     </span>
                     <span  className={'search-panel-icon'}>
-                        {this.state.searchOpen ? '收起' : '展开'}
+                        {this.state.searchOpen ? <FormattedMessage
+                            id="components.searchPanel.fold"
+                        /> : <FormattedMessage
+                            id="components.searchPanel.open"
+                        />}
                         <i className={classnames({
                                 'uf': true,
                                 'uf-arrow-down': this.state.searchOpen,
@@ -77,8 +84,12 @@ class SearchPanel extends Component {
            <Panel className={classes}  header={header()}  collapsible expanded={this.state.searchOpen}>
                 {children}
                 <div className='search-panel-btn'>
-                    <Button size='sm' className='reset-btn' onClick={this.reset}>{resetName?resetName:'清空'}</Button>
-                    <Button size='sm' className='submit-btn' onClick={this.search}>{searchName?searchName:'查询'}</Button>
+                    <Button size='sm' className='reset-btn' onClick={this.reset}>{resetName?resetName:<FormattedMessage
+                        id="components.searchPanel.empty"
+                    />}</Button>
+                    <Button size='sm' className='submit-btn' onClick={this.search}>{searchName?searchName:<FormattedMessage
+                        id="components.searchPanel.search"
+                    />}</Button>
                 </div>
            </Panel>
         )
